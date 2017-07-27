@@ -1,0 +1,43 @@
+﻿@model IEnumerable<TelerikMvcDemo.Models.Student>
+<script src="~/Scripts/bootbox.min.js"></script>
+<div style="background-color:aliceblue">
+    <h3>This is partial view</h3>
+    <table class="table table-bordered table-responsive table-hover">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Email
+            </td>
+                <td>
+                    @Html.ActionLink("View Details","ViewDetails",new {id="div"+@item.Id}, new { onclick = "return openDetails(event);" })
+                </td>
+        </tr>
+        }
+    </table>
+</div>
+<script>
+    function openDetails(e) {
+       
+        var box = bootbox.dialog({ message: '<div class="text-center"><i class="fa fa-spin fa-spinner"></i> Loading...</div>', closeButton:false })
+       
+        setTimeout(function () {
+            box.modal('hide');
+           
+        }, 1000);
+        return false;
+    }
+</script>

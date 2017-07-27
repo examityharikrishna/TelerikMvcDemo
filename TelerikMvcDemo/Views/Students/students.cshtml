@@ -1,0 +1,108 @@
+﻿
+@model TelerikMvcDemo.Models.StudentViewModel
+@{
+    ViewBag.Title = "students";
+}
+@Html.Partial("../Home/HomePartialView",Model.Students)
+<h2>Students</h2>
+<div>
+    <table class="table table-bordered table-responsive table-hover">
+        <tr>
+            <th>Id </th>
+            <th>Name </th>
+            <th>Email</th>
+        </tr>
+        @foreach (var d in Model.Students)
+        {
+            <tr>
+                <td>@d.Id</td>
+                <td>@d.Name</td>
+                <td>@d.Email</td>
+            </tr>
+        }
+    </table>
+</div>
+<div>
+    <h2>Local data binding with Telerik Grid</h2>
+</div>
+<div>
+    @(Html.Kendo().Grid(Model.Courses)
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Id).Title("Id").Width(20);
+        columns.Bound(p => p.Name).Title("Name").Width(50);       
+    })
+    .HtmlAttributes(new { style = "height: 200px;" })
+    .Pageable(pageable => pageable
+       .Input(true)
+       .Numeric(false)
+     )
+
+    .Scrollable(scr => scr.Height(200))
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(2)
+        .Read(read => read.Action("GetCourses", "Students"))
+        .ServerOperation(false)
+     )
+    )
+</div>
+<div>
+    <h2>API data binding with Telerik Grid</h2>
+</div>
+<div>
+    @(Html.Kendo().Grid(Model.Courses)
+      .Name("grid")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Title("Id").Width(20);
+          columns.Bound(p => p.Name).Title("Name").Width(50);         
+          columns.Command(command => { command.Edit(); command.Destroy(); }).Width(172);
+      })
+      .ToolBar(tools =>
+      {
+          tools.Create();
+      })
+      .Sortable()
+      .Pageable()
+      .Filterable()
+      .DataSource(dataSource =>
+          dataSource
+            .WebApi()
+            .Model(model =>
+            {
+                model.Id(p => p.Id);
+            })
+            .Events(events => events.Error("error_handler"))
+            .Read(read => read.Url(Url.HttpRouteUrl("DefaultApi", new { controller = "students" })))
+            .Create(create => create.Url(Url.HttpRouteUrl("DefaultApi", new { controller = "students" })))
+            .Update(update => update.Url(Url.HttpRouteUrl("DefaultApi", new { controller = "students", id = "{0}" })))
+            .Destroy(destroy => destroy.Url(Url.HttpRouteUrl("DefaultApi", new { controller = "students", id = "{0}" })))
+      )
+    )
+
+</div>
+Remote databinding
+<div>
+    @(Html.Kendo().Grid(Model.Courses)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Id);
+        columns.Bound(p => p.Name);    
+    })
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .Filterable()
+    .HtmlAttributes(new { style = "height:200px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(5)
+        .Read(read => read.Action("GetCourses", "Students"))
+     )
+    )
+</div>
+
